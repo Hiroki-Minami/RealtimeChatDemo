@@ -1,0 +1,80 @@
+<div class="w-full px-48 py-8">
+    <div class="flex flex-col w-full">
+        <mat-tab-group [mat-stretch-tabs]="isLoggedIn()" mat-align-tabs="center" animationDuration="0ms">
+            <mat-tab *ngIf="isLoggedIn()" label="Followings">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                    <mat-card *ngFor="let following of followings$ | async">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <mat-card-title>{{ following.name }}</mat-card-title>
+                                <img mat-card-md-image src="/assets/images/profile.svg" alt="Profile Image">
+                            </mat-card-title-group>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>{{ following.description }}</p>
+                        </mat-card-content>
+                        <mat-card-actions class="space-x-4">
+                            <!-- when users tap unfollow button become follow -->
+                            <button *ngIf="followingSet.has(following.id!); else unfollowFollowingsBlock" mat-flat-button color="primary" (click)="unfollow(following.id!)">Unfollow</button>
+                            <ng-template #unfollowFollowingsBlock>
+                                <button mat-flat-button color="primary" (click)="follow(following.id!)">Follow</button>
+                            </ng-template>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            </mat-tab>
+            <mat-tab *ngIf="isLoggedIn()" label="Followers">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                    <mat-card *ngFor="let follower of followers$ | async">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <mat-card-title>{{ follower.name }}</mat-card-title>
+                                <img mat-card-md-image src="/assets/images/profile.svg" alt="Profile Image">
+                            </mat-card-title-group>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>{{ follower.description }}</p>
+                        </mat-card-content>
+                        <mat-card-actions class="space-x-4">
+                            <!-- if the user follow show unfollow button otherwise follow button -->
+                            <button *ngIf="followingSet.has(follower.id!); else unfollowFollowersBlock" mat-flat-button color="primary" (click)="unfollow(follower.id!)">Unfollow</button>
+                            <ng-template #unfollowFollowersBlock>
+                                <button mat-flat-button color="primary" (click)="follow(follower.id!)">Follow</button>
+                            </ng-template>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            </mat-tab>
+            <mat-tab label="Search">
+                <div class="flex flex-col w-full items-center mt-4">
+                    <mat-form-field>
+                        <input matInput type="text" [(ngModel)]="searchText" (keydown)="handleKeyInput($event)">
+                        <button matSuffix mat-icon-button aria-label="Search" (click)="search()" [disabled]="!searchText">
+                            <mat-icon fontIcon="search"></mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                    <mat-card *ngFor="let user of searchResult$ | async">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <mat-card-title>{{ user.name }}</mat-card-title>
+                                <img mat-card-md-image src="/assets/images/profile.svg" alt="Profile Image">
+                            </mat-card-title-group>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>{{ user.description }}</p>
+                        </mat-card-content>
+                        <mat-card-actions class="space-x-4">
+                            <!-- if the user follow show unfollow button otherwise follow button -->
+                            <button *ngIf="followingSet.has(user.id!); else unfollowSearchBlock" mat-flat-button color="primary" (click)="unfollow(user.id!)">Unfollow</button>
+                            <ng-template #unfollowSearchBlock>
+                                <button mat-flat-button color="primary" (click)="follow(user.id!)">Follow</button>
+                            </ng-template>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

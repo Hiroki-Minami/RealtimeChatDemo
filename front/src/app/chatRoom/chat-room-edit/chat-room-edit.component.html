@@ -1,0 +1,76 @@
+<div class="flex flex-col w-full items-center p-8">
+    <div class="md:w-2/5">
+      <h2 class="text-2xl font-semibold mb-6">Edit Chat Room</h2>
+      <form class="flex flex-col w-full space-y-4" [formGroup]="editRoomForm" (ngSubmit)="onSubmit()">
+        <mat-form-field>
+          <mat-label>Room Name</mat-label>
+          <input matInput placeholder="Room Name" formControlName="roomName" required>
+          <mat-error *ngIf="editRoomForm.get('roomName')?.invalid">{{ REQUIRE_ERROR }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="h-48 w-full">
+          <mat-label>Description</mat-label>
+          <input matInput placeholder="Description" formControlName="description" required>
+          <mat-error *ngIf="editRoomForm.get('description')?.invalid">{{ REQUIRE_ERROR }}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Start Date</mat-label>
+            <input matInput placeholder="Start Date" formControlName="startDate" [matDatepicker]="startDatePicker"
+                [min]="minDate"
+                [max]="editRoomForm.get('endDate')?.value"
+                required
+            >
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatePicker>
+                <button mat-button matDatepickerCancel>Cancel</button>
+                <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+            </mat-datepicker>
+            <mat-error *ngIf="editRoomForm.get('startDate')?.invalid">{{ REQUIRE_ERROR }}</mat-error>
+        </mat-form-field>
+        <input
+            class="bg-gray-100 border-b border-gray-400 h-14 pl-5 pr-3 rounded-sm"
+            type="time"
+            [max]="editRoomForm.get('startDate')?.value == editRoomForm.get('endDate')?.value ? editRoomForm.get('endTime')?.value: null"
+            formControlName="startTime"
+            required
+        >
+        <p class="pl-4 text-red-500 text-xs" *ngIf="editRoomForm.get('startTime')?.invalid">{{ REQUIRE_ERROR }}</p>
+        <mat-form-field>
+            <mat-label>End Date</mat-label>
+            <input matInput placeholder="End Date" formControlName="endDate" [matDatepicker]="endDatePicker"
+                [min]="editRoomForm.get('startDate')?.value"
+                required
+            >
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #endDatePicker>
+                <button mat-button matDatepickerCancel>Cancel</button>
+                <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+            </mat-datepicker>
+            <mat-error *ngIf="editRoomForm.get('endDate')?.invalid">{{ REQUIRE_ERROR }}</mat-error>
+        </mat-form-field>
+        <input
+            class="bg-gray-100 border-b border-gray-400 h-14 pl-5 pr-3 rounded-sm"
+            type="time"
+            formControlName="endTime"
+            required
+        >
+        <p class="pl-4 text-red-500 text-xs" *ngIf="editRoomForm.get('endTime')?.invalid">{{ REQUIRE_ERROR }}</p>
+        <div class="flex justify-center items-center mb-4 space-x-4">
+            <button mat-flat-button color="primary"
+                (click)="back()"
+            >
+                Back
+            </button>
+            <button mat-flat-button color="accent"
+                [disabled]="!editRoomForm.valid"
+                type="submit"
+            >
+                Submit
+            </button>
+        </div>
+        <!-- Display error message if passwords do not match -->
+        <!-- <div *ngIf="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</div> -->
+      </form>
+    </div>
+  </div>

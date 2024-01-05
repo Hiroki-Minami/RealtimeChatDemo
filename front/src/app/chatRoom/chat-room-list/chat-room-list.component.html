@@ -1,0 +1,122 @@
+<div class="w-full px-48 py-8">
+    <div class="flex flex-col w-full">
+        <div class="flex">
+            <button class="ml-auto" color="primary" mat-flat-button (click)="create()">
+                + Create
+            </button>
+        </div>
+        <div *ngIf="hostings$ | async as hostings">
+            <div *ngIf="hostings.length > 0" class="flex flex-col">
+                <h1 class="sm:text-2xl md:text-3xl font-bold">
+                    Hosting
+                </h1>
+                <div class="overflow-x-scroll py-6">
+                    <div class="flex space-x-16">
+                        <mat-card class="w-[200px] pr-12" *ngFor="let chatroom of hostings">
+                            <mat-card-header>
+                                <mat-card-title-group>
+                                    <mat-card-title>{{ chatroom.roomName }}</mat-card-title>
+                                    <img mat-card-md-image src="/assets/images/chat-bubble.svg">
+                                </mat-card-title-group>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <p>{{ chatroom.startDate }}</p>
+                                <br/>
+                                <p>{{ chatroom.description }}</p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button mat-flat-button color="primary" (click)="edit(chatroom.id!)">Edit</button>
+                                <button mat-flat-button color="accent" (click)="delete(chatroom.id!)">Delete</button>
+                                <button mat-flat-button color="accent" (click)="join(chatroom.id!)">Join</button>
+                                <!-- // join, detail, edit, delete cancel -->
+                                <!-- if you haven't joined yet and started yet => join -->
+                                <!-- detail for all -->
+                                <!-- edit if you are the host => edit -->
+                                <!-- if you are the host => delete -->
+                            </mat-card-actions>
+                        </mat-card>
+                        <!-- iterate Attendings -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="participatings$ | async as participatings">
+            <div *ngIf="participatings.length > 0" class="flex flex-col">
+                <h1 class="sm:text-2xl md:text-3xl font-bold">
+                    Participating
+                </h1>
+                <div class="overflow-x-scroll py-6">
+                    <div class="flex space-x-16">
+                        <mat-card class="w-[300px] pr-12 mx-8" *ngFor="let chatroom of participatings">
+                            <mat-card-header>
+                                <mat-card-title-group>
+                                    <mat-card-title>{{ chatroom.roomName }}</mat-card-title>
+                                    <mat-card-subtitle>Hosted by {{ chatroom.owner?.name }}</mat-card-subtitle>
+                                    <img mat-card-md-image src="/assets/images/chat-bubble.svg">
+                                </mat-card-title-group>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <p>{{ chatroom.startDate }}</p>
+                                <br/>
+                                <p>{{ chatroom.description }}</p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button *ngIf="participatingSet.has(chatroom.id!); else participatingCancelBlock" mat-flat-button color="primary" (click)="cancel(chatroom.id!)">Cancel</button>
+                                <ng-template #participatingCancelBlock>
+                                    <button mat-flat-button color="primary" (click)="attend(chatroom.id!)">Attend</button>
+                                </ng-template>
+                                <button mat-flat-button color="accent" (click)="join(chatroom.id!)">Join</button>
+                                <!-- // join, detail, edit, delete cancel -->
+                                <!-- if you haven't joined yet and started yet => join -->
+                                <!-- detail for all -->
+                                <!-- edit if you are the host => edit -->
+                                <!-- if you are the host => delete -->
+                            </mat-card-actions>
+                        </mat-card>
+                        <!-- iterate Attendings -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="allChatRooms$ | async as allChatRooms">
+            <div *ngIf="allChatRooms.length > 0" class="flex flex-col">
+                <h1 class="sm:text-2xl md:text-3xl font-bold">
+                    Chat Rooms
+                </h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 py-6">
+                    <mat-card class="pr-6" *ngFor="let chatroom of allChatRooms">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <mat-card-title>{{ chatroom.roomName }}</mat-card-title>
+                                <img mat-card-md-image src="/assets/images/chat-bubble.svg">
+                            </mat-card-title-group>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>{{ chatroom.startDate }}</p>
+                            <br/>
+                            <p>{{ chatroom.description }}</p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button *ngIf="participatingSet.has(chatroom.id!); else chatRoomsCancelBlock" mat-flat-button color="primary" (click)="cancel(chatroom.id!)">Cancel</button>
+                            <ng-template #chatRoomsCancelBlock>
+                                <button mat-flat-button color="primary" (click)="attend(chatroom.id!)">Attend</button>
+                            </ng-template>
+                            <button mat-flat-button color="accent" (click)="join(chatroom.id!)">Join</button>
+                            <!-- // join, detail, edit, delete cancel -->
+                            <!-- if you haven't joined yet and started yet => join -->
+                            <!-- detail for all -->
+                            <!-- edit if you are the host => edit -->
+                            <!-- if you are the host => delete -->
+                        </mat-card-actions>
+                    </mat-card>
+                    <!-- iterate Attendings -->
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- host -->
+        <!-- Followings -->
+        
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="flex flex-col w-full items-center p-8">
+  <div class="w-96">
+    <h2 class="text-2xl font-semibold mb-6">Register</h2>
+    <form class="flex flex-col w-full space-y-4" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput placeholder="test@example.com" [formControl]="email" required>
+        <mat-error *ngIf="email.invalid">{{ email.hasError('required') ? REQUIRE_ERROR : 'Not a valid email' }}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Name" [formControl]="name" required>
+        <mat-error *ngIf="name.invalid">{{ REQUIRE_ERROR }}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Nick Name</mat-label>
+        <input matInput placeholder="Nick Name" [formControl]="nickName">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password': 'text'" [formControl]="password" required>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide Password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="password.invalid">{{ REQUIRE_ERROR }}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Confirm Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password': 'text'" [formControl]="confirmPassword" required>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide Password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="confirmPassword.invalid">{{ REQUIRE_ERROR }}</mat-error>
+        <mat-error *ngIf="password.value !== confirmPassword.value">'Confirm Password is different from Password'</mat-error>
+      </mat-form-field>
+      <div class="flex justify-center items-center">
+        <button mat-flat-button color="primary" class="mb-4" 
+          [disabled]="email.invalid || name.invalid || password.invalid || confirmPassword.invalid || password.value !== confirmPassword.value"  
+          type="submit" >
+          Register
+        </button>
+      </div>
+      <!-- Display error message if passwords do not match -->
+      <div *ngIf="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</div>
+    </form>
+  </div>
+</div>

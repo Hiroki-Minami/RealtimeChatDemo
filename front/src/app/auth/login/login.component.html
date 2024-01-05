@@ -1,0 +1,31 @@
+<div class="flex flex-col w-full items-center p-8">
+    <div class="flex flex-col items-center w-96">
+        <h2 class="text-2xl font-semibold mb-6">Login</h2>
+        <form class="flex flex-col w-full" (ngSubmit)="onSubmit()">
+            <mat-form-field class="mb-4">
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="test@example.com" [formControl]="email" required>
+                <mat-error *ngIf="email.invalid">{{ email.hasError('required') ? REQUIRE_ERROR : 'Not a valid email' }}</mat-error>
+            </mat-form-field>
+            <mat-form-field class="mb-4">
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hidePassword ? 'password': 'text'" [formControl]="password" required>
+                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide Password'" [attr.aria-pressed]="hidePassword">
+                    <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="password.invalid">{{ REQUIRE_ERROR }}</mat-error>
+            </mat-form-field>
+            <div class="flex flex-col justify-center items-center">
+                <button mat-flat-button color="primary" type="submit" class="mb-4" [disabled]="email.invalid || password.invalid">
+                    Login
+                </button>
+                <a href="/register" class="text-blue-500 hover:border-b border-blue-500 mb-6">forgot your password?</a>
+                <button mat-flat-button (click)="signUp()" color="accent">
+                    Sign up
+                </button>
+            </div>
+        </form>
+        <!-- Display error message if authentication fails -->
+        <div *ngIf="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</div>
+    </div>
+</div>
