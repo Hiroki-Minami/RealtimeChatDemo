@@ -7,6 +7,6 @@ import com.hirokiminami.chatroom.back.dto.chat.KafkaResponseMessage;
 
 public class ChatFactory {
     public static ChatResponseMessage convertFromKafkaChatMessage(KafkaResponseMessage kafkaChatMessage) {
-        return new ChatResponseMessage(ChatResponseType.fromValue(kafkaChatMessage.getType()), ChatCommand.fromValue(kafkaChatMessage.getCommand()), null, null, kafkaChatMessage.getMessage());
+        return new ChatResponseMessage(ChatResponseType.fromValue(kafkaChatMessage.getType()), ChatCommand.fromValue(kafkaChatMessage.getCommand()), null, null, kafkaChatMessage.getMessage(), null);
     }
 }

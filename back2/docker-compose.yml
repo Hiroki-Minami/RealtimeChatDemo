@@ -19,7 +19,7 @@ services:
   mongo-express:
     image: mongo-express
     container_name: chat_room_mongo_express
-    restart: always
+    restart: unless-stopped
     ports:
       - "8081:8081"
     environment:

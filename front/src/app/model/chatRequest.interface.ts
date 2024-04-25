@@ -1,4 +1,4 @@
-interface JoinCommand {
+export interface JoinCommand {
     command: 'join';
     poster: {
       id: string;
@@ -6,7 +6,7 @@ interface JoinCommand {
       nickName: string;
     };
   }
-  interface LeaveCommand {
+  export interface LeaveCommand {
     command: 'leave';
     poster: {
       id: string;
@@ -14,7 +14,7 @@ interface JoinCommand {
       nickName: string;
     };
   }
-  interface PostCommand {
+  export interface PostCommand {
     command: 'post';
     poster: {
       id: string;
@@ -23,7 +23,7 @@ interface JoinCommand {
     };
     message: string;
   }
-  interface DeleteCommand {
+  export interface DeleteCommand {
     command: 'delete';
     poster: {
       id: string;
@@ -32,7 +32,7 @@ interface JoinCommand {
     };
     messageId: string;
   }
-  interface DoneCommand {
+  export interface DoneCommand {
     command: 'done';
     poster: {
       id: string;

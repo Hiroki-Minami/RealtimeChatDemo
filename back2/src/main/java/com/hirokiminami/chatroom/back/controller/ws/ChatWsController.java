@@ -9,6 +9,7 @@ import com.hirokiminami.chatroom.back.model.ChatRoom;
 import com.hirokiminami.chatroom.back.repository.ChatRoomParticipantsHolder;
 import com.hirokiminami.chatroom.back.service.ActiveParticipantsService;
 import com.hirokiminami.chatroom.back.service.ChatRoomService;
+import com.hirokiminami.chatroom.back.service.ChatTimerService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,8 @@ public class ChatWsController {
     private ActiveParticipantsService activeParticipantsService;
     @Autowired
     private ChatRoomService chatRoomService;
+    @Autowired
+    private ChatTimerService chatTimerService;
 
     @MessageMapping("/{roomId}/send") // /ws-chat/{roomId}/send
 //    @MessageMapping("/send")
@@ -41,18 +44,28 @@ public class ChatWsController {
     public void sendMessage(ChatRequestMessage chatMessage, @DestinationVariable String roomId) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(roomId);
         String errorMessage;
+        String messageId;
         switch (chatRoom.getStatus()) {
             case CREATED -> {
                 // TODO: Only Join if the user is owner
                 // TODO: timer start
-                if (chatRoom.getOwner().getId().equals(chatMessage.getPoster().getId())) {
-                    chatRoom.setStatus(ChatRoomStatus.STARTED);
-                    chatRoomService.updateChatRoom(chatRoom);
+                switch (chatMessage.getCommand()) {
+                    case JOIN -> {
+                        if (chatRoom.getOwner().getId().equals(chatMessage.getPoster().getId())) {
+                            chatRoom.setStatus(ChatRoomStatus.STARTED);
+                            chatRoomService.updateChatRoom(chatRoom);
+                            // Timer Start
+                            chatTimerService.startTimer(roomId, chatRoom);
 
-                    // Timer Start
-                } else {
-                    // Error message but just ask users to wait
-                    errorMessage = "Wait for the host a while.";
+                            activeParticipantsService.join(roomId, chatMessage.getPoster().getId());
+                        } else {
+                            // Error message but just ask users to wait
+                            errorMessage = "Wait for the host a while.";
+                        }
+                    }
+                    default -> {
+                        errorMessage = "Inappropriate command.";
+                    }
                 }
             }
             case STARTED -> {
@@ -61,22 +74,14 @@ public class ChatWsController {
                 // TODO: check if the chatRoom is started
                 switch (chatMessage.getCommand()) {
                     case JOIN -> {
-                        // TODO: add to holder
-                        Map<String, Set<String>> map = chatRoomParticipantsHolder.getParticipantsHolder();
-                        Set<String> participants = map.getOrDefault(roomId, new HashSet<>());
-                        participants.add(chatMessage.getPoster().getId());
-                        map.put(roomId, participants);
-                        // TODO: add to redis set?
-
-                        // TODO: change status of chat room if the status is created but not started and owner
-                        // TODO: timer start?
+                        activeParticipantsService.join(roomId, chatMessage.getPoster().getId());
                     }
                     case POST -> {
                         // TODO: set UUID to messageID
+                        messageId = UUID.randomUUID().toString();
                     }
                     case LEAVE -> {
                         // TODO: remove from holder
-
                         // TODO: remove from redis array?
                     }
                     case DONE -> {
@@ -84,9 +89,13 @@ public class ChatWsController {
                         // TODO: remove all the array on redis?
                         // TODO: change status of chat room
                     }
-                    case DELETE -> {}
+                    case DELETE -> {
+                        messageId = chatMessage.getMessageId();
+                    }
                     // TODO: throw?
-                    default -> {}
+                    default -> {
+                        errorMessage = "unsupported command.";
+                    }
                 }
             }
             default -> {

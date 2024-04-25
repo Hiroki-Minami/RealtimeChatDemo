@@ -4,7 +4,7 @@ import { Message } from '@stomp/stompjs';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import { ChatWebsocketService } from 'src/app/chat-websocket.service';
-import { ChatRequest } from 'src/app/model/chatRequest.interface';
+import { ChatRequest, PostCommand } from 'src/app/model/chatRequest.interface';
 
 // interface chatRequest {
 //   command: 'join'| 'leave'| 'post'| 'delete'| 'done'
@@ -37,6 +37,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     roomId = ''
     postMessage = ''
     messages: string[] = []
+    chatResponse: chatResponse[] = []
 
     private subscription: Subscription | undefined
 
@@ -50,6 +51,11 @@ export class ChatComponent implements OnInit, OnDestroy {
         // .watch('/chat/messages')
         .watch(`/chat/${this.roomId}/messages`)
         .subscribe((message: Message) => {
+          const parsed: chatResponse = JSON.parse(message.body)
+          switch (parsed.command) {
+            case 'join':
+
+          }
           // TODO: parse 
           // TODO: switch
           this.messages.push(message.body)
@@ -66,9 +72,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     post() {
       // console.log(`posted: ${this.postMessage}`)
       // this.chatWebsocketService.publish({ destination: `/ws-chat/${this.roomId}/send`, body: this.postMessage })
-      const message = {
+      const user = this.authService.loggedInUser()!
+      const message: PostCommand = {
         message: this.postMessage,
         command: 'post',
+        poster: {
+          id: user.id!,
+          name: user.name || '',
+          nickName: user.nickName || ''
+        }
       }
       this.chatWebsocketService.publish({ destination: `/ws-chat/${this.roomId}/send`, body: JSON.stringify(message) })
       // TODO: clear postMessage

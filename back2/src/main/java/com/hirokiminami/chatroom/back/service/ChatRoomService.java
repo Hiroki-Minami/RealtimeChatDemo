@@ -65,6 +65,14 @@ public class ChatRoomService {
         return chatRoomRepository.save(chatRoom);
     }
 
+    public void doneChatRoom(String id) {
+        ChatRoom chatRoom = chatRoomRepository.findById(id).orElseThrow();
+        chatRoom.setStatus(ChatRoomStatus.DONE);
+
+        chatRoomRepository.save(chatRoom);
+        return;
+    }
+
     public ChatRoom updateChatRoom(ChatRoom chatRoom) {
         return chatRoomRepository.save(chatRoom);
     }

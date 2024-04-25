@@ -14,7 +14,7 @@ export class ChatWebsocketService extends RxStomp {
 
   // private stompClient: Stomp.Client | null = null
   // private wsSubscription: Subscription | null = null
-  // private readonly SOCKET_URL = 'http://localhost:8080/ws'
+  // private readonly SOCKET_URL = 'https://localhost:8080/ws'
   // private readonly SENDING_TOPIC = '/ws-chat'
   // private readonly SUBSCRIBING_TOPIC = '/chat/messages'
 
